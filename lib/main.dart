@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:thesht/waypoints.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
 
 void main() => runApp(new MyApp());
 
@@ -57,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.map),
-            onPressed: () => print('pressed'),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => OfflineMapPage())),
           ),
           IconButton(
             icon: Icon(Icons.format_list_numbered),
@@ -80,6 +82,45 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: new Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+class OfflineMapPage extends StatelessWidget {
+  static const String route = '/offline_map';
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(title: new Text("Offline Map")),
+      body: new Padding(
+        padding: new EdgeInsets.all(8.0),
+        child: new Column(
+          children: [
+            new Padding(
+              padding: new EdgeInsets.only(top: 8.0, bottom: 8.0),
+              child: new Text(
+                  "This is an offline map that is showing the SHT in Minnesota!")
+            ),
+            new Flexible(
+              child: new FlutterMap(
+                options: new MapOptions(
+                  center: new LatLng(-91.4062, 47.2792),
+                  minZoom: 8.0,
+                  maxZoom: 13.0,
+                  zoom: 11.0,
+                  swPanBoundary: LatLng(-92.7081, 46.5834),
+                  nePanBoundary: LatLng(-89.3573, 48.1679),
+                ),
+                layers: [
+                  new TileLayerOptions(
+                    offlineMode: true,
+                    maxZoom: 14.0,
+                    urlTemplate: "assets/map/{z}/{x}/{y}.png",
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

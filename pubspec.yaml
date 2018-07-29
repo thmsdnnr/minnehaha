@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   location: ^1.3.4
+  flutter_map: ^0.0.1
   haversine: ^1.0.2
 
   # The following adds the Cupertino Icons font to your application.
@@ -34,6 +35,139 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/map/8/62/
+    - assets/map/8/63/
+    - assets/map/8/64/
+    - assets/map/9/124/
+    - assets/map/9/125/
+    - assets/map/9/126/
+    - assets/map/9/127/
+    - assets/map/9/128/
+    - assets/map/10/248/
+    - assets/map/10/249/
+    - assets/map/10/250/
+    - assets/map/10/251/
+    - assets/map/10/252/
+    - assets/map/10/253/
+    - assets/map/10/254/
+    - assets/map/10/255/
+    - assets/map/10/256/
+    - assets/map/11/497/
+    - assets/map/11/498/
+    - assets/map/11/499/
+    - assets/map/11/500/
+    - assets/map/11/501/
+    - assets/map/11/502/
+    - assets/map/11/503/
+    - assets/map/11/504/
+    - assets/map/11/505/
+    - assets/map/11/506/
+    - assets/map/11/507/
+    - assets/map/11/508/
+    - assets/map/11/509/
+    - assets/map/11/510/
+    - assets/map/11/511/
+    - assets/map/11/512/
+    - assets/map/11/513/
+    - assets/map/12/994/
+    - assets/map/12/995/
+    - assets/map/12/996/
+    - assets/map/12/997/
+    - assets/map/12/998/
+    - assets/map/12/999/
+    - assets/map/12/1000/
+    - assets/map/12/1001/
+    - assets/map/12/1002/
+    - assets/map/12/1003/
+    - assets/map/12/1004/
+    - assets/map/12/1005/
+    - assets/map/12/1006/
+    - assets/map/12/1007/
+    - assets/map/12/1008/
+    - assets/map/12/1009/
+    - assets/map/12/1000/
+    - assets/map/12/1010/
+    - assets/map/12/1011/
+    - assets/map/12/1012/
+    - assets/map/12/1013/
+    - assets/map/12/1014/
+    - assets/map/12/1015/
+    - assets/map/12/1016/
+    - assets/map/12/1017/
+    - assets/map/12/1018/
+    - assets/map/12/1019/
+    - assets/map/12/1020/
+    - assets/map/12/1021/
+    - assets/map/12/1022/
+    - assets/map/12/1023/
+    - assets/map/12/1024/
+    - assets/map/12/1025/
+    - assets/map/12/1026/
+    - assets/map/13/1989/
+    - assets/map/13/1990/
+    - assets/map/13/1991/
+    - assets/map/13/1992/
+    - assets/map/13/1993/
+    - assets/map/13/1994/
+    - assets/map/13/1995/
+    - assets/map/13/1996/
+    - assets/map/13/1997/
+    - assets/map/13/1998/
+    - assets/map/13/1999/
+    - assets/map/13/2000/
+    - assets/map/13/2001/
+    - assets/map/13/2002/
+    - assets/map/13/2003/
+    - assets/map/13/2004/
+    - assets/map/13/2005/
+    - assets/map/13/2006/
+    - assets/map/13/2007/
+    - assets/map/13/2008/
+    - assets/map/13/2009/
+    - assets/map/13/2010/
+    - assets/map/13/2011/
+    - assets/map/13/2012/
+    - assets/map/13/2013/
+    - assets/map/13/2014/
+    - assets/map/13/2015/
+    - assets/map/13/2016/
+    - assets/map/13/2017/
+    - assets/map/13/2018/
+    - assets/map/13/2019/
+    - assets/map/13/2020/
+    - assets/map/13/2021/
+    - assets/map/13/2022/
+    - assets/map/13/2023/
+    - assets/map/13/2024/
+    - assets/map/13/2025/
+    - assets/map/13/2026/
+    - assets/map/13/2027/
+    - assets/map/13/2028/
+    - assets/map/13/2029/
+    - assets/map/13/2030/
+    - assets/map/13/2031/
+    - assets/map/13/2032/
+    - assets/map/13/2033/
+    - assets/map/13/2034/
+    - assets/map/13/2035/
+    - assets/map/13/2036/
+    - assets/map/13/2037/
+    - assets/map/13/2038/
+    - assets/map/13/2039/
+    - assets/map/13/2040/
+    - assets/map/13/2041/
+    - assets/map/13/2042/
+    - assets/map/13/2043/
+    - assets/map/13/2044/
+    - assets/map/13/2045/
+    - assets/map/13/2046/
+    - assets/map/13/2047/
+    - assets/map/13/2048/
+    - assets/map/13/2049/
+    - assets/map/13/2050/
+    - assets/map/13/2051/
+    - assets/map/13/2052/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
