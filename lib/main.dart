@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+
 import 'package:thesht/waypoints.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong/latlong.dart';
+import 'package:thesht/mapscreen.dart';
 
 void main() => runApp(MyApp());
 
@@ -50,8 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.map),
-            onPressed: () => Navigator.push(context,
-                MaterialPageRoute(builder: (context) => OfflineMapPage())),
+            onPressed: () => Navigator.push(
+                context, MaterialPageRoute(builder: (context) => MapScreen())),
           ),
           IconButton(
             icon: Icon(Icons.format_list_numbered),
@@ -71,35 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class OfflineMapPage extends StatelessWidget {
-  static const String route = '/offline_map';
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Offline Map")),
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: FlutterMap(
-          options: MapOptions(
-            center: LatLng(47.2792, -91.4062),
-            minZoom: 8.0,
-            maxZoom: 13.0,
-            zoom: 11.0,
-            swPanBoundary: LatLng(46.5834, -92.7081),
-            nePanBoundary: LatLng(48.1679, -89.3573),
-          ),
-          layers: [
-            TileLayerOptions(
-              offlineMode: true,
-              maxZoom: 14.0,
-              urlTemplate: "assets/map/{z}/{x}/{y}.png",
-            ),
-          ],
-        ),
       ),
     );
   }
