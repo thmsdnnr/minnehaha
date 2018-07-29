@@ -27,12 +27,14 @@ class _MapScreenState extends State<MapScreen> {
   void getPosition() async {
     var position =
         await Geolocator().getPosition(LocationAccuracy.bestForNavigation);
-    setState(() {
-      _thisPosition = MapPosition(
-          center: LatLng(position.latitude, position.longitude),
-          zoom: _currentZoom);
-      theControls.move(_thisPosition.center, _currentZoom);
-    });
+    if (position != null) {
+      setState(() {
+        _thisPosition = MapPosition(
+            center: LatLng(position.latitude, position.longitude),
+            zoom: _currentZoom);
+        theControls.move(_thisPosition.center, _currentZoom);
+      });
+    }
   }
 
   @override
@@ -48,7 +50,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("HIKING ON THE TRAAAIL <3"),
+        title: Text("<3"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.zoom_out),
