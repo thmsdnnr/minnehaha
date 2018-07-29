@@ -14,7 +14,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   static final double _minZoom = 8.0;
-  static final double _maxZoom = 13.0;
+  static final double _maxZoom = 14.0;
   MapController theControls = MapController();
 
   double _currentZoom = 11.0;
