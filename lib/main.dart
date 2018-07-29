@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
+
+import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/models/location_accuracy.dart';
+import 'package:geolocator/models/position.dart';
 
 import 'package:thesht/waypoints.dart';
 import 'package:thesht/mapscreen.dart';
@@ -33,13 +36,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  String location = "";
+  Position location =
+      Position.fromMap({"latitude": 43.23, "longitude": -23.33});
 
   void _incrementCounter() async {
-    var currentLocation = await Location().getLocation;
-    print(currentLocation.toString());
+    print('hi'); //TODO: fix location
+    Position position =
+        await Geolocator().getPosition();
+    print(position.latitude.toString());
     setState(() {
-      location = currentLocation.toString();
+      print(position.latitude);
+      location = position;
     });
   }
 
@@ -56,7 +63,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           IconButton(
             icon: Icon(Icons.format_list_numbered),
-            onPressed: () => print('pressed'),
+            onPressed: () => Navigator.push(
+                context, MaterialPageRoute(builder: (context) => MapScreen())),
           )
         ],
       ),
@@ -64,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("$location"),
+            Text("${location.latitude}, ${location.longitude}"),
           ],
         ),
       ),

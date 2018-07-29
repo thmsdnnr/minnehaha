@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 
+import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/models/location_accuracy.dart';
+import 'package:geolocator/models/position.dart';
+
 class MapScreen extends StatefulWidget {
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -14,10 +18,27 @@ class _MapScreenState extends State<MapScreen> {
   MapController theControls = MapController();
 
   double _currentZoom = 11.0;
-  MapPosition thisPosition;
+  MapPosition _thisPosition;
 
   void _handlePositionChange(newPosition) {
-    thisPosition = newPosition;
+    _thisPosition = newPosition;
+  }
+
+  void getPosition() async {
+    var position =
+        await Geolocator().getPosition(LocationAccuracy.bestForNavigation);
+    setState(() {
+      _thisPosition = MapPosition(
+          center: LatLng(position.latitude, position.longitude),
+          zoom: _currentZoom);
+      theControls.move(_thisPosition.center, _currentZoom);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPosition();
   }
 
   double zoomIn() => min((_currentZoom + 1.0), _maxZoom);
@@ -33,15 +54,19 @@ class _MapScreenState extends State<MapScreen> {
             icon: Icon(Icons.zoom_out),
             onPressed: () => setState(() {
                   _currentZoom = zoomOut();
-                  theControls.move(thisPosition.center, _currentZoom);
+                  theControls.move(_thisPosition.center, _currentZoom);
                 }),
           ),
           IconButton(
             icon: Icon(Icons.zoom_in),
             onPressed: () => setState(() {
                   _currentZoom = zoomIn();
-                  theControls.move(thisPosition.center, _currentZoom);
+                  theControls.move(_thisPosition.center, _currentZoom);
                 }),
+          ),
+          IconButton(
+            icon: Icon(Icons.location_on),
+            onPressed: getPosition,
           )
         ],
       ),
@@ -50,8 +75,9 @@ class _MapScreenState extends State<MapScreen> {
         options: MapOptions(
           onTap: (positionTapped) {
             // Zoom to tapped position if position != current.
-            thisPosition = MapPosition(center: positionTapped, zoom: zoomIn());
-            theControls.move(thisPosition.center, thisPosition.zoom);
+            // print("${positionTapped.latitude}, ${positionTapped.longitude}");
+            _thisPosition = MapPosition(center: positionTapped, zoom: zoomIn());
+            theControls.move(_thisPosition.center, _thisPosition.zoom);
           },
           onPositionChanged: (position) {
             _handlePositionChange(position);
@@ -69,6 +95,18 @@ class _MapScreenState extends State<MapScreen> {
             maxZoom: 13.0,
             urlTemplate: "assets/map/{z}/{x}/{y}.png",
           ),
+          MarkerLayerOptions(markers: [
+            Marker(
+                width: 80.0,
+                height: 80.0,
+                point: _thisPosition?.center,
+                builder: (ctx) => Container(
+                      child: Icon(
+                        Icons.person_pin,
+                        color: Colors.pink,
+                      ),
+                    ))
+          ])
         ],
       ),
     );
