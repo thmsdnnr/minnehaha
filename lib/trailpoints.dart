@@ -28,12 +28,14 @@ class Trailpoints {
   static double sumBetweenIndices(int A, int B, {bool isNOBO: false}) {
     // Returns the sum of distance in miles between indices 
     // A and B in the specified direction
-    int directionMultiplier = A < B ? 1 : -1;
+    int directionMultiplier = A < B ? 
+      isNOBO ? 1 : -1
+      : isNOBO ? -1 : 1;
     int smaller = min(A, B);
     int larger = max(A, B);
     double cumulativeDistance = 0.0;
     for (var i = smaller; smaller < larger; smaller++) {
-      cumulativeDistance = isNOBO ? cumulativeDistance + list[i]["dist_to_N"] : cumulativeDistance + list[i]["dist_to_S"];
+      cumulativeDistance = cumulativeDistance + list[i]["dist_to_N"];
     }
     return directionMultiplier * cumulativeDistance;
   }
