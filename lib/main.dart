@@ -7,8 +7,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geolocator/models/location_accuracy.dart';
 import 'package:geolocator/models/position.dart';
 
-import 'package:thesht/waypoints.dart';
 import 'package:thesht/mapscreen.dart';
+import 'package:thesht/waypointscreen.dart';
 
 void main() => runApp(MyApp());
 
@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: Icon(Icons.format_list_numbered),
             onPressed: () => Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MapScreen())),
+                context, MaterialPageRoute(builder: (context) => WaypointScreen())),
           )
         ],
       ),
