@@ -7,8 +7,9 @@ class Trailpoints {
   static int getClosestIndexTo(LatLng location) {
     var minDiff = 999999999.0;
     int closestIdx = -1;
-    for (var i=0; i<list.length; i++) {
-      var dist = (list[i]["lat"] - location.latitude).abs() + (list[i]["lon"] - location.longitude).abs();
+    for (var i = 0; i < list.length; i++) {
+      var dist = (list[i]["lat"] - location.latitude).abs() +
+          (list[i]["lon"] - location.longitude).abs();
       if (dist < minDiff) {
         minDiff = dist;
         closestIdx = i;
@@ -20,17 +21,16 @@ class Trailpoints {
   static String getMileAt(LatLng location, {bool isNOBO: false}) {
     int closestIdx = getClosestIndexTo(location);
     print(closestIdx);
-    int numer = isNOBO ? closestIdx - numTrailpoints : numTrailpoints - closestIdx;
+    int numer =
+        isNOBO ? closestIdx - numTrailpoints : numTrailpoints - closestIdx;
     print(numer);
-    return (290*numer/numTrailpoints).toStringAsFixed(1);
+    return (290 * numer / numTrailpoints).toStringAsFixed(1);
   }
 
   static double sumBetweenIndices(int A, int B, {bool isNOBO: false}) {
-    // Returns the sum of distance in miles between indices 
+    // Returns the sum of distance in miles between indices
     // A and B in the specified direction
-    int directionMultiplier = A < B ? 
-      isNOBO ? 1 : -1
-      : isNOBO ? -1 : 1;
+    int directionMultiplier = A < B ? isNOBO ? 1 : -1 : isNOBO ? -1 : 1;
     int smaller = min(A, B);
     int larger = max(A, B);
     double cumulativeDistance = 0.0;

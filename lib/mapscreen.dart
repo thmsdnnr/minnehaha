@@ -112,8 +112,6 @@ class _MapScreenState extends State<MapScreen> {
         mapController: theControls,
         options: MapOptions(
           onTap: (positionTapped) {
-            // Zoom to tapped position if position != current.
-            // print("${positionTapped.latitude}, ${positionTapped.longitude}");
             _thisPosition = MapPosition(center: positionTapped, zoom: zoomIn());
             theControls.move(_thisPosition.center, _thisPosition.zoom);
           },

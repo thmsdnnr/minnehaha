@@ -67,6 +67,7 @@ class _WaypointScreenState extends State<WaypointScreen> {
     "CMP": "Campsites",
     "TWN": "Towns",
     "CAR": "Roads",
+    "TRL": "Trails",
   };
   LatLng _thisPosition;
   int _closestWptIdx;
@@ -121,8 +122,9 @@ class _WaypointScreenState extends State<WaypointScreen> {
             itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
                   PopupMenuItem<String>(value: "WTR", child: Text("Water")),
                   PopupMenuItem<String>(value: "CMP", child: Text("Campsites")),
-                  PopupMenuItem<String>(value: "TWN", child: Text("Towns")),
+                  PopupMenuItem<String>(value: "TRL", child: Text("Trails")),
                   PopupMenuItem<String>(value: "CAR", child: Text("Roads")),
+                  PopupMenuItem<String>(value: "TWN", child: Text("Towns")),
                   PopupMenuItem<String>(
                       value: "ALL", child: Text("Everything")),
                 ],
@@ -134,7 +136,11 @@ class _WaypointScreenState extends State<WaypointScreen> {
   }
 
   double calculateDistanceFromMe(wpt, isNOBO) {
-    return Trailpoints.sumBetweenIndices(wpt["closestWptIdx"], _closestWptIdx, isNOBO: isNOBO);
+    if (_closestWptIdx == null) {
+      return null;
+    }
+    return Trailpoints.sumBetweenIndices(wpt["closestWptIdx"], _closestWptIdx,
+        isNOBO: isNOBO);
   }
 
   Widget buildPlaceList(BuildContext context, filter, _isNOBO) {
@@ -144,15 +150,16 @@ class _WaypointScreenState extends State<WaypointScreen> {
       place["dFromMe"] = calculateDistanceFromMe(place, _isNOBO);
     }
     if (filter != "ALL") {
-      print("filtering" + filter);
       listOfPlaces =
           listOfPlaces.where((item) => item["typ"] == filter).toList();
     }
-    listOfPlaces.sort((A, B) {
-      double d_A = A["dFromMe"];
-      double d_B = B["dFromMe"];
-      return d_A.compareTo(d_B);
-    });
+    if (_closestWptIdx != null) {
+      listOfPlaces.sort((A, B) {
+        double d_A = A["dFromMe"];
+        double d_B = B["dFromMe"];
+        return d_A.compareTo(d_B);
+      });
+    }
     return ListView.builder(
         itemCount: listOfPlaces.length,
         controller: widget._scrollController,
@@ -160,14 +167,16 @@ class _WaypointScreenState extends State<WaypointScreen> {
           final Map<String, Object> W = listOfPlaces[index];
           double distanceAway = W["dFromMe"];
           return ListTile(
-              title: Text(W["name"]),
-              subtitle: Text("${W["typ"]} ${distanceAway.toStringAsFixed(2)}"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MapScreen(W)),
-                );
-              });
+            title: Text(W["name"]),
+            subtitle: Text(
+                "${W["typ"]} ${distanceAway != null ? distanceAway.toStringAsFixed(2) : ""}"),
+            trailing: IconButton(
+                icon: Icon(Icons.map),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => MapScreen(W)));
+                }),
+          );
         });
   }
 }
