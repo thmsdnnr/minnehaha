@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thesht/mapscreen.dart';
 import 'package:thesht/waypoints.dart';
 
 enum CD { NORTH, SOUTH, EAST, WEST }
@@ -55,7 +56,10 @@ Widget buildPlaceList(BuildContext context, filter, _isNOBO) {
           title: Text(W["name"]),
           subtitle: Text(W["typ"]),
           onTap: () {
-            print("haha tickles");
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => MapScreen(W)),
+            );
+            // print("haha tickles");
           }
         );
       });

@@ -8,6 +8,8 @@ import 'package:geolocator/models/location_accuracy.dart';
 import 'package:geolocator/models/position.dart';
 
 class MapScreen extends StatefulWidget {
+  final coords;
+  MapScreen([this.coords]);
   @override
   _MapScreenState createState() => _MapScreenState();
 }
@@ -16,23 +18,32 @@ class _MapScreenState extends State<MapScreen> {
   static final double _minZoom = 8.0;
   static final double _maxZoom = 13.0;
   MapController theControls = MapController();
-
+  final List<Marker> _markerList = [];
   double _currentZoom = 11.0;
   MapPosition _thisPosition;
+  LatLng _initialCenter = LatLng(47.2792, -91.4062);
 
   void _handlePositionChange(newPosition) {
     _thisPosition = newPosition;
   }
 
-  void getPosition() async {
+  void getPosition({bool panTo=true}) async {
     var position =
         await Geolocator().getPosition(LocationAccuracy.bestForNavigation);
     if (position != null) {
       setState(() {
-        _thisPosition = MapPosition(
-            center: LatLng(position.latitude, position.longitude),
-            zoom: _currentZoom);
-        theControls.move(_thisPosition.center, _currentZoom);
+        LatLng _thisPosition = LatLng(position.latitude, position.longitude);
+        if (panTo == true) theControls.move(_thisPosition, _currentZoom);
+        _markerList.add(Marker(
+            width: 80.0,
+            height: 80.0,
+            point: _thisPosition,
+            builder: (ctx) => Container(
+                  child: Icon(
+                    Icons.place,
+                    color: Colors.deepPurple,
+                  ),
+                )));
       });
     }
   }
@@ -40,7 +51,31 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    getPosition();
+    if (widget.coords != null) {
+      LatLng newPoint = LatLng(widget.coords["lat"], widget.coords["lon"]);
+      dropPinOn(newPoint);
+      setState(() {
+        _initialCenter = newPoint;
+      });
+    } else {
+      getPosition();
+    }
+  }
+
+  void dropPinOn(LatLng coords, {double size, Icons icon}) {
+    setState(() {
+      _markerList.add(Marker(
+          width: 80.0,
+          height: 80.0,
+          point: coords,
+          builder: (ctx) => Container(
+                child: Icon(
+                  Icons.person_pin,
+                  color: Colors.pink,
+                ),
+              )));
+      // theControls.move(coords, _currentZoom);
+    });
   }
 
   double zoomIn() => min((_currentZoom + 1.0), _maxZoom);
@@ -84,7 +119,7 @@ class _MapScreenState extends State<MapScreen> {
           onPositionChanged: (position) {
             _handlePositionChange(position);
           },
-          center: LatLng(47.2792, -91.4062),
+          center: _initialCenter,
           minZoom: _minZoom,
           maxZoom: _maxZoom,
           zoom: 13.0,
@@ -97,18 +132,7 @@ class _MapScreenState extends State<MapScreen> {
             maxZoom: 13.0,
             urlTemplate: "assets/map/{z}/{x}/{y}.png",
           ),
-          MarkerLayerOptions(markers: [
-            Marker(
-                width: 80.0,
-                height: 80.0,
-                point: _thisPosition?.center,
-                builder: (ctx) => Container(
-                      child: Icon(
-                        Icons.person_pin,
-                        color: Colors.pink,
-                      ),
-                    ))
-          ])
+          MarkerLayerOptions(markers: _markerList),
         ],
       ),
     );
