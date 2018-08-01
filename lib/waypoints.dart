@@ -1569,8 +1569,8 @@ class Waypoints {
       "closestWptIdx": 1080
     },
     {
-      "lat": 47.597015,
-      "lon": -90.860498,
+      "lat": 47.5737891,
+      "lon": -90.8450137,
       "typ": "TWN",
       "name": "Tofte (2.5 mi off)",
       "closestWptIdx": 1080
