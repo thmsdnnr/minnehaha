@@ -1,12 +1,4 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-
-import 'package:geolocator/geolocator.dart';
-import 'package:geolocator/models/location_accuracy.dart';
-import 'package:geolocator/models/position.dart';
-
 import 'package:thesht/mapscreen.dart';
 import 'package:thesht/waypointscreen.dart';
 
@@ -31,25 +23,10 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  Position location =
-      Position.fromMap({"latitude": 43.23, "longitude": -23.33});
-
-  void _incrementCounter() async {
-    print('hi'); //TODO: fix location
-    Position position =
-        await Geolocator().getPosition();
-    print(position.latitude.toString());
-    setState(() {
-      print(position.latitude);
-      location = position;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,14 +49,9 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("${location.latitude}, ${location.longitude}"),
+            Text("Let's take a walk!"),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
       ),
     );
   }

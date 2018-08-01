@@ -130,6 +130,7 @@ class _MapScreenState extends State<MapScreen> {
             offlineMode: true,
             maxZoom: 13.0,
             urlTemplate: "assets/map/{z}/{x}/{y}.png",
+            keepBuffer: 8,
           ),
           MarkerLayerOptions(markers: _markerList),
         ],

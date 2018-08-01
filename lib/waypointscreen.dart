@@ -181,10 +181,13 @@ class _WaypointScreenState extends State<WaypointScreen> {
         itemBuilder: (context, index) {
           final Map<String, Object> W = listOfPlaces[index];
           double distanceAway = W["dFromMe"];
+          String distanceString = distanceAway != null && distanceAway < 0
+              ? "${distanceAway.abs().toStringAsFixed(1)} miles back"
+              : "${distanceAway.abs().toStringAsFixed(1)} miles";
           return ListTile(
             title: Text(W["name"]),
             subtitle: Text(
-                "${W["typ"]} ${distanceAway != null ? distanceAway.toStringAsFixed(2) : ""}"),
+                "${W["typ"]} $distanceString"),
             trailing: IconButton(
                 icon: Icon(Icons.map),
                 onPressed: () {
