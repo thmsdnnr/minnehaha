@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/models/location_accuracy.dart';
+import 'package:latlong/latlong.dart';
 import 'package:thesht/mapscreen.dart';
+import 'package:thesht/trailpoints.dart';
 import 'package:thesht/waypoints.dart';
 
 enum CD { NORTH, SOUTH, EAST, WEST }
@@ -42,34 +46,14 @@ enum WPT_TYPE {
   CMP,
 }
 
-Widget buildPlaceList(BuildContext context, filter, _isNOBO) {
-  List<Map<String, Object>> listOfPlaces = _isNOBO ? Waypoints.list : Waypoints.list.reversed.toList();
-  if (filter != "ALL") {
-    print("filtering" + filter);
-    listOfPlaces = listOfPlaces.where((item) => item["typ"] == filter).toList();
-  }
-  return ListView.builder(
-      itemCount: listOfPlaces.length,
-      itemBuilder: (context, index) {
-        final Map<String, Object> W = listOfPlaces[index];
-        return ListTile(
-          title: Text(W["name"]),
-          subtitle: Text(W["typ"]),
-          onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MapScreen(W)),
-            );
-            // print("haha tickles");
-          }
-        );
-      });
-}
-
 class WaypointScreen extends StatefulWidget {
   WaypointScreen({Key key, this.title}) : super(key: key);
 
   final String title;
-
+  final ScrollController _scrollController = ScrollController(
+    initialScrollOffset: 0.0,
+    keepScrollOffset: true,
+  );
   @override
   _WaypointScreenState createState() => new _WaypointScreenState();
 }
@@ -84,6 +68,27 @@ class _WaypointScreenState extends State<WaypointScreen> {
     "TWN": "Towns",
     "CAR": "Roads",
   };
+  LatLng _thisPosition;
+  int _closestWptIdx;
+  final double _initialScrollOffset = 0.0;
+
+  void getPosition() async {
+    var position =
+        await Geolocator().getPosition(LocationAccuracy.bestForNavigation);
+    if (position != null) {
+      setState(() {
+        _thisPosition = LatLng(position.latitude, position.longitude);
+        _closestWptIdx = Trailpoints.getClosestIndexTo(_thisPosition);
+        print(Trailpoints.getMileAt(_thisPosition));
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPosition();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +97,10 @@ class _WaypointScreenState extends State<WaypointScreen> {
         title: Text(
             "${titleFromFilter[_currentSelected]} (${_isNOBO ? "NOBO" : "SOBO"})"),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.location_on),
+            onPressed: getPosition,
+          ),
           IconButton(
             icon: Icon(Icons.swap_vert),
             onPressed: () {
@@ -122,5 +131,43 @@ class _WaypointScreenState extends State<WaypointScreen> {
       ),
       body: Center(child: buildPlaceList(context, _currentSelected, _isNOBO)),
     );
+  }
+
+  double calculateDistanceFromMe(wpt, isNOBO) {
+    return Trailpoints.sumBetweenIndices(wpt["closestWptIdx"], _closestWptIdx, isNOBO: isNOBO);
+  }
+
+  Widget buildPlaceList(BuildContext context, filter, _isNOBO) {
+    List<Map<String, Object>> listOfPlaces =
+        _isNOBO ? Waypoints.list : Waypoints.list.reversed.toList();
+    for (var place in listOfPlaces) {
+      place["dFromMe"] = calculateDistanceFromMe(place, _isNOBO);
+    }
+    if (filter != "ALL") {
+      print("filtering" + filter);
+      listOfPlaces =
+          listOfPlaces.where((item) => item["typ"] == filter).toList();
+    }
+    listOfPlaces.sort((A, B) {
+      double d_A = A["dFromMe"];
+      double d_B = B["dFromMe"];
+      return d_A.compareTo(d_B);
+    });
+    return ListView.builder(
+        itemCount: listOfPlaces.length,
+        controller: widget._scrollController,
+        itemBuilder: (context, index) {
+          final Map<String, Object> W = listOfPlaces[index];
+          double distanceAway = W["dFromMe"];
+          return ListTile(
+              title: Text(W["name"]),
+              subtitle: Text("${W["typ"]} ${distanceAway.toStringAsFixed(2)}"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MapScreen(W)),
+                );
+              });
+        });
   }
 }

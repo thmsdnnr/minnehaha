@@ -27,20 +27,22 @@ class _MapScreenState extends State<MapScreen> {
     _thisPosition = newPosition;
   }
 
-  void getPosition({bool panTo=true}) async {
+  void getPosition({bool panTo = true}) async {
     var position =
         await Geolocator().getPosition(LocationAccuracy.bestForNavigation);
     if (position != null) {
       setState(() {
         LatLng _thisPosition = LatLng(position.latitude, position.longitude);
-        if (panTo == true) theControls.move(_thisPosition, _currentZoom);
+        if (panTo == true) {
+          theControls.move(_thisPosition, _currentZoom);
+        }
         _markerList.add(Marker(
-            width: 80.0,
-            height: 80.0,
+            width: 100.0,
+            height: 100.0,
             point: _thisPosition,
             builder: (ctx) => Container(
                   child: Icon(
-                    Icons.place,
+                    Icons.android,
                     color: Colors.deepPurple,
                   ),
                 )));
@@ -65,16 +67,15 @@ class _MapScreenState extends State<MapScreen> {
   void dropPinOn(LatLng coords, {double size, Icons icon}) {
     setState(() {
       _markerList.add(Marker(
-          width: 80.0,
-          height: 80.0,
+          width: 100.0,
+          height: 100.0,
           point: coords,
           builder: (ctx) => Container(
                 child: Icon(
-                  Icons.person_pin,
+                  Icons.place,
                   color: Colors.pink,
                 ),
               )));
-      // theControls.move(coords, _currentZoom);
     });
   }
 
