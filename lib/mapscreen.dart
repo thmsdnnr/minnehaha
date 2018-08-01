@@ -5,7 +5,6 @@ import 'package:latlong/latlong.dart';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:geolocator/models/location_accuracy.dart';
-import 'package:geolocator/models/position.dart';
 
 class MapScreen extends StatefulWidget {
   final coords;

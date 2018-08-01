@@ -40,8 +40,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           IconButton(
             icon: Icon(Icons.format_list_numbered),
-            onPressed: () => Navigator.push(
-                context, MaterialPageRoute(builder: (context) => WaypointScreen())),
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => WaypointScreen())),
           )
         ],
       ),

@@ -55,7 +55,7 @@ class WaypointScreen extends StatefulWidget {
     keepScrollOffset: true,
   );
   @override
-  _WaypointScreenState createState() => new _WaypointScreenState();
+  _WaypointScreenState createState() => _WaypointScreenState();
 }
 
 class _WaypointScreenState extends State<WaypointScreen> {
@@ -79,7 +79,6 @@ class _WaypointScreenState extends State<WaypointScreen> {
       setState(() {
         _thisPosition = LatLng(position.latitude, position.longitude);
         _closestWptIdx = Trailpoints.getClosestIndexTo(_thisPosition);
-        print(Trailpoints.getMileAt(_thisPosition, isNOBO: _isNOBO));
       });
     }
   }
@@ -98,17 +97,20 @@ class _WaypointScreenState extends State<WaypointScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       appBar: AppBar(
-        title: Text(
-            "${titleFromFilter[_currentSelected]} (${_isNOBO ? "NOBO" : "SOBO"})"),
+        title: Text("${titleFromFilter[_currentSelected]}"),
         actions: <Widget>[
           IconButton(
+            tooltip: "Get location",
             icon: Icon(Icons.location_on),
             onPressed: getPosition,
           ),
           IconButton(
-            icon: Icon(Icons.swap_vert),
+            tooltip: "Hiking ${!_isNOBO == true ? "SOBO" : "NOBO"}",
+            icon: _isNOBO
+                ? Icon(Icons.keyboard_arrow_up)
+                : Icon(Icons.keyboard_arrow_down),
             onPressed: () {
               setState(() {
                 _isNOBO = !_isNOBO;
@@ -116,10 +118,9 @@ class _WaypointScreenState extends State<WaypointScreen> {
             },
           ),
           PopupMenuButton<String>(
+            elevation: 4.0,
             icon: Icon(Icons.filter_list),
-            initialValue: "ALL",
             onSelected: (selection) {
-              print(selection);
               setState(() {
                 _currentSelected = selection;
               });
@@ -171,23 +172,38 @@ class _WaypointScreenState extends State<WaypointScreen> {
       if (haveNextWpt == false && distanceAway != null && distanceAway >= 0) {
         haveNextWpt = true;
         if (widget._scrollController.hasClients == true) {
-          _goToElement(i, context);
+          // TODO: display current mileage and direction as a tile or overlay.
+          // String currentMile = Trailpoints.getMileAt(_thisPosition);
+          // listOfPlaces.insert(i, {
+          //   "isCurrentPosition": true,
+          //   "title": "Walking ${_isNOBO == true ? "north" : "south"}",
+          //   "subtitle": "Near mile $currentMile"
+          // });
+          _goToElement(i + 1, context);
         }
       }
     }
     return ListView.builder(
         itemCount: listOfPlaces.length,
         controller: widget._scrollController,
+        shrinkWrap: true,
         itemBuilder: (context, index) {
           final Map<String, Object> W = listOfPlaces[index];
+          // TODO: display current mileage and direction as a tile or overlay.
+          // if (W["isCurrentPosition"] == true) {
+          //   return ListTile(
+          //     leading: Icon(Icons.android, color: Colors.deepOrange),
+          //     title: Text("${W["title"]}"),
+          //     subtitle: Text("${W["subtitle"]}"),
+          //   );
+          // } else {
           double distanceAway = W["dFromMe"];
           String distanceString = distanceAway != null && distanceAway < 0
               ? "${distanceAway.abs().toStringAsFixed(1)} miles back"
               : "${distanceAway.abs().toStringAsFixed(1)} miles";
           return ListTile(
             title: Text(W["name"]),
-            subtitle: Text(
-                "${W["typ"]} $distanceString"),
+            subtitle: Text("$distanceString"),
             trailing: IconButton(
                 icon: Icon(Icons.map),
                 onPressed: () {
@@ -195,6 +211,7 @@ class _WaypointScreenState extends State<WaypointScreen> {
                       MaterialPageRoute(builder: (context) => MapScreen(W)));
                 }),
           );
+          // }
         });
   }
 }
