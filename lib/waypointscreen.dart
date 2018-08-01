@@ -71,7 +71,6 @@ class _WaypointScreenState extends State<WaypointScreen> {
   };
   LatLng _thisPosition;
   int _closestWptIdx;
-  final double _initialScrollOffset = 0.0;
 
   void getPosition() async {
     var position =
@@ -80,7 +79,7 @@ class _WaypointScreenState extends State<WaypointScreen> {
       setState(() {
         _thisPosition = LatLng(position.latitude, position.longitude);
         _closestWptIdx = Trailpoints.getClosestIndexTo(_thisPosition);
-        print(Trailpoints.getMileAt(_thisPosition));
+        print(Trailpoints.getMileAt(_thisPosition, isNOBO: _isNOBO));
       });
     }
   }
@@ -89,6 +88,12 @@ class _WaypointScreenState extends State<WaypointScreen> {
   void initState() {
     super.initState();
     getPosition();
+  }
+
+  void _goToElement(int index, BuildContext context) {
+    double offset = 72.0;
+    widget._scrollController.animateTo((offset * index),
+        duration: const Duration(milliseconds: 200), curve: Curves.elasticIn);
   }
 
   @override
@@ -155,10 +160,20 @@ class _WaypointScreenState extends State<WaypointScreen> {
     }
     if (_closestWptIdx != null) {
       listOfPlaces.sort((A, B) {
-        double d_A = A["dFromMe"];
-        double d_B = B["dFromMe"];
-        return d_A.compareTo(d_B);
+        double dA = A["dFromMe"];
+        double dB = B["dFromMe"];
+        return dA.compareTo(dB);
       });
+    }
+    bool haveNextWpt = false;
+    for (var i = 0; i < listOfPlaces.length; i++) {
+      double distanceAway = listOfPlaces[i]["dFromMe"];
+      if (haveNextWpt == false && distanceAway != null && distanceAway >= 0) {
+        haveNextWpt = true;
+        if (widget._scrollController.hasClients == true) {
+          _goToElement(i, context);
+        }
+      }
     }
     return ListView.builder(
         itemCount: listOfPlaces.length,
