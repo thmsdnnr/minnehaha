@@ -1381,7 +1381,7 @@ class Waypoints {
     },
     {
       "typ": "CMP",
-      "name": "Dyer\"s Creek",
+      "name": "Dyer's Creek",
       "lat": 47.53256584969011,
       "lon": -90.97041662381095,
       "closestWptIdx": 1001
@@ -2116,7 +2116,7 @@ class Waypoints {
     },
     {
       "typ": "CMP",
-      "name": "Wood\"s Creek",
+      "name": "Wood's Creek",
       "lat": 47.783334923408766,
       "lon": -90.26633009358228,
       "closestWptIdx": 1356
@@ -2209,7 +2209,7 @@ class Waypoints {
       "lat": 47.802204,
       "lon": -90.125784,
       "typ": "CAR",
-      "name": "Kelly\"s Hill Rd",
+      "name": "Kelly's Hill Rd",
       "closestWptIdx": 1411
     },
     {
@@ -2314,7 +2314,7 @@ class Waypoints {
       "lat": 47.829421,
       "lon": -90.049228,
       "typ": "POI",
-      "name": "Devil\"s Kettle Falls",
+      "name": "Devil's Kettle Falls",
       "closestWptIdx": 1457
     },
     {
