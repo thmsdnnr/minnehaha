@@ -52,7 +52,7 @@ class WaypointScreen extends StatefulWidget {
   final String title;
   final ScrollController _scrollController = ScrollController(
     initialScrollOffset: 0.0,
-    keepScrollOffset: true,
+    keepScrollOffset: false,
   );
   @override
   _WaypointScreenState createState() => _WaypointScreenState();
@@ -91,7 +91,7 @@ class _WaypointScreenState extends State<WaypointScreen> {
 
   void _goToElement(int index, BuildContext context) {
     double offset = 72.0;
-    widget._scrollController.animateTo((offset * index),
+    widget._scrollController.animateTo((offset * (index - 3)),
         duration: const Duration(milliseconds: 200), curve: Curves.elasticIn);
   }
 
@@ -145,6 +145,7 @@ class _WaypointScreenState extends State<WaypointScreen> {
     if (_closestWptIdx == null) {
       return null;
     }
+
     return Trailpoints.sumBetweenIndices(wpt["closestWptIdx"], _closestWptIdx,
         isNOBO: isNOBO);
   }
@@ -173,12 +174,12 @@ class _WaypointScreenState extends State<WaypointScreen> {
         haveNextWpt = true;
         if (widget._scrollController.hasClients == true) {
           // TODO: display current mileage and direction as a tile or overlay.
-          // String currentMile = Trailpoints.getMileAt(_thisPosition);
-          // listOfPlaces.insert(i, {
-          //   "isCurrentPosition": true,
-          //   "title": "Walking ${_isNOBO == true ? "north" : "south"}",
-          //   "subtitle": "Near mile $currentMile"
-          // });
+          String currentMile = Trailpoints.getMileAt(_thisPosition);
+          listOfPlaces.insert(i, {
+            "isCurrentPosition": true,
+            "title": "Walking ${_isNOBO == true ? "north" : "south"}",
+            "subtitle": "Near mile $currentMile"
+          });
           _goToElement(i + 1, context);
         }
       }
@@ -190,28 +191,31 @@ class _WaypointScreenState extends State<WaypointScreen> {
         itemBuilder: (context, index) {
           final Map<String, Object> W = listOfPlaces[index];
           // TODO: display current mileage and direction as a tile or overlay.
-          // if (W["isCurrentPosition"] == true) {
-          //   return ListTile(
-          //     leading: Icon(Icons.android, color: Colors.deepOrange),
-          //     title: Text("${W["title"]}"),
-          //     subtitle: Text("${W["subtitle"]}"),
-          //   );
-          // } else {
-          double distanceAway = W["dFromMe"];
-          String distanceString = distanceAway != null && distanceAway < 0
-              ? "${distanceAway.abs().toStringAsFixed(1)} miles back"
-              : "${distanceAway.abs().toStringAsFixed(1)} miles";
-          return ListTile(
-            title: Text(W["name"]),
-            subtitle: Text("$distanceString"),
-            trailing: IconButton(
-                icon: Icon(Icons.map),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MapScreen(W)));
-                }),
-          );
-          // }
+          if (W["isCurrentPosition"] == true) {
+            return ListTile(
+              leading: Icon(Icons.android, color: Colors.deepOrange),
+              title: Text("${W["title"]}"),
+              subtitle: Text("${W["subtitle"]}"),
+            );
+          } else {
+            double distanceAway = W["dFromMe"];
+            String distanceString = "";
+            if (distanceAway != null) {
+              String dist = distanceAway.abs().toStringAsFixed(1);
+              distanceString =
+                  distanceAway < 0 ? "$dist miles back" : "$dist miles away";
+            }
+            return ListTile(
+              title: Text(W["name"]),
+              subtitle: Text("$distanceString"),
+              trailing: IconButton(
+                  icon: Icon(Icons.map),
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MapScreen(W)));
+                  }),
+            );
+          }
         });
   }
 }
