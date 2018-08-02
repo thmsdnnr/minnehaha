@@ -21,18 +21,25 @@ class Trailpoints {
   static String getMileAt(LatLng location, {bool isNOBO: false}) {
     int closestIdx = getClosestIndexTo(location);
     int numer = numTrailpoints - closestIdx;
-    double fractionComplete = isNOBO == true ? numer / numTrailpoints : 1 - (numer / numTrailpoints);
+    double fractionComplete =
+        isNOBO == true ? numer / numTrailpoints : 1 - (numer / numTrailpoints);
     return (290 * fractionComplete).toStringAsFixed(1);
   }
 
   static double sumBetweenIndices(int A, int B, {bool isNOBO: false}) {
-    // Returns the sum of distance in miles between indices
+    // Returns the sum distance in miles between indices
     // A and B in the specified direction
+    if (A == null || B == null) {
+      return 9999999999.0;
+    }
     int directionMultiplier = A < B ? isNOBO ? 1 : -1 : isNOBO ? -1 : 1;
     int smaller = min(A, B);
     int larger = max(A, B);
+    smaller = max(0, smaller);
+    larger = min(1597, larger);
+
     double cumulativeDistance = 0.0;
-    for (var i = smaller; smaller < larger; smaller++) {
+    for (var i = smaller; i < larger; i++) {
       cumulativeDistance = cumulativeDistance + list[i]["dist_to_N"];
     }
     return directionMultiplier * cumulativeDistance;
