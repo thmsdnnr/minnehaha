@@ -18,12 +18,12 @@ class Trailpoints {
     return closestIdx;
   }
 
-  static String getMileAt(LatLng location, {bool isNOBO: false}) {
+  static double getMileAt(LatLng location, {bool isNOBO: false}) {
     int closestIdx = getClosestIndexTo(location);
     int numer = numTrailpoints - closestIdx;
     double fractionComplete =
         isNOBO == true ? numer / numTrailpoints : 1 - (numer / numTrailpoints);
-    return (290 * fractionComplete).toStringAsFixed(1);
+    return 290 - (290 * fractionComplete);
   }
 
   static double sumBetweenIndices(int A, int B, {bool isNOBO: false}) {
@@ -32,7 +32,8 @@ class Trailpoints {
     if (A == null || B == null) {
       return 9999999999.0;
     }
-    int directionMultiplier = A < B ? isNOBO ? 1 : -1 : isNOBO ? -1 : 1;
+    int directionMultiplier = isNOBO ? -1 : 1;
+    if (A > B) { directionMultiplier = directionMultiplier * -1; }
     int smaller = min(A, B);
     int larger = max(A, B);
     smaller = max(0, smaller);

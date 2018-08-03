@@ -45,14 +45,60 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text("Let's take a walk!"),
-          ],
-        ),
-      ),
+      body: buildBodyWidget(),
     );
+  }
+
+  Widget buildBodyWidget() {
+    return Container(
+        decoration: new BoxDecoration(
+          image: new DecorationImage(
+            image: AssetImage('assets/marmot.jpeg'),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.6), BlendMode.dstATop),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            ListTile(
+              title: Text("Hi"),
+              subtitle: Text("there"),
+            )
+          ]
+        )
+    );
+            
+    // return Column(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+    //   Card(
+    //     child: Container(
+    //       child:
+    //           Text('Hello world', style: Theme.of(context).textTheme.display2),
+    //       decoration: BoxDecoration(
+    //           color: const Color(0xff7c94b6),
+    //           image: DecorationImage(
+    //             fit: BoxFit.cover,
+    //             colorFilter: ColorFilter.mode(
+    //                 Colors.black.withOpacity(0.6), BlendMode.dstATop),
+    //             image: AssetImage('assets/marmot.jpeg'),
+    //           )),
+    //     ),
+    //   ),
+    //   Card(
+    //     child: Container(
+    //       child:
+    //           Text('Hello world', style: Theme.of(context).textTheme.display3),
+    //       decoration: BoxDecoration(
+    //           color: const Color(0xff7c94b6),
+    //           image: DecorationImage(
+    //             fit: BoxFit.cover,
+    //             colorFilter: ColorFilter.mode(
+    //                 Colors.black.withOpacity(0.6), BlendMode.dstATop),
+    //             image: AssetImage('assets/marmot.jpeg'),
+    //           )),
+    //     ),
+    //   ),
+    // ]);
   }
 }

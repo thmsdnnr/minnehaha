@@ -71,6 +71,7 @@ class _WaypointScreenState extends State<WaypointScreen> {
   };
   LatLng _thisPosition;
   int _closestWptIdx;
+  double _closestMile;
 
   void getPosition() async {
     var position =
@@ -79,6 +80,7 @@ class _WaypointScreenState extends State<WaypointScreen> {
       setState(() {
         _thisPosition = LatLng(position.latitude, position.longitude);
         _closestWptIdx = Trailpoints.getClosestIndexTo(_thisPosition);
+        _closestMile = Trailpoints.getMileAt(_thisPosition, isNOBO: _isNOBO);
       });
     }
   }
@@ -87,6 +89,13 @@ class _WaypointScreenState extends State<WaypointScreen> {
   void initState() {
     super.initState();
     getPosition();
+  }
+
+  void switchHikingDirection() {
+    setState(() {
+      _isNOBO = !_isNOBO;
+      _closestMile = Trailpoints.getMileAt(_thisPosition, isNOBO: _isNOBO);
+    });
   }
 
   void _goToElement(int index, BuildContext context) {
@@ -108,14 +117,10 @@ class _WaypointScreenState extends State<WaypointScreen> {
           ),
           IconButton(
             tooltip: "Hiking ${!_isNOBO == true ? "SOBO" : "NOBO"}",
-            icon: _isNOBO
+            icon: _isNOBO == true
                 ? Icon(Icons.keyboard_arrow_up)
                 : Icon(Icons.keyboard_arrow_down),
-            onPressed: () {
-              setState(() {
-                _isNOBO = !_isNOBO;
-              });
-            },
+            onPressed: switchHikingDirection,
           ),
           PopupMenuButton<String>(
             elevation: 4.0,
@@ -137,7 +142,16 @@ class _WaypointScreenState extends State<WaypointScreen> {
           ),
         ],
       ),
-      body: Center(child: buildPlaceList(context, _currentSelected, _isNOBO)),
+      body: Container(
+          decoration: new BoxDecoration(
+            image: new DecorationImage(
+              image: AssetImage('assets/marmot.jpeg'),
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.2), BlendMode.dstATop),
+            ),
+          ),
+          child: buildPlaceList(context, _currentSelected, _isNOBO)),
     );
   }
 
@@ -147,12 +161,12 @@ class _WaypointScreenState extends State<WaypointScreen> {
     }
 
     return Trailpoints.sumBetweenIndices(wpt["closestWptIdx"], _closestWptIdx,
-        isNOBO: isNOBO);
+        isNOBO: _isNOBO);
   }
 
   Widget buildPlaceList(BuildContext context, filter, _isNOBO) {
-    List<Map<String, Object>> listOfPlaces =
-        _isNOBO ? Waypoints.list : Waypoints.list.reversed.toList();
+    List<Map<String, Object>> listOfPlaces = Waypoints.list;
+    // _isNOBO == true ? Waypoints.list : Waypoints.list.reversed.toList();
     for (var place in listOfPlaces) {
       place["dFromMe"] = calculateDistanceFromMe(place, _isNOBO);
     }
@@ -167,18 +181,19 @@ class _WaypointScreenState extends State<WaypointScreen> {
         return dA.compareTo(dB);
       });
     }
+    listOfPlaces = listOfPlaces
+        .where((place) => place["isCurrentPosition"] == null)
+        .toList();
     bool haveNextWpt = false;
     for (var i = 0; i < listOfPlaces.length; i++) {
       double distanceAway = listOfPlaces[i]["dFromMe"];
       if (haveNextWpt == false && distanceAway != null && distanceAway >= 0) {
         haveNextWpt = true;
         if (widget._scrollController.hasClients == true) {
-          // TODO: display current mileage and direction as a tile or overlay.
-          String currentMile = Trailpoints.getMileAt(_thisPosition);
           listOfPlaces.insert(i, {
             "isCurrentPosition": true,
             "title": "Walking ${_isNOBO == true ? "north" : "south"}",
-            "subtitle": "Near mile $currentMile"
+            "subtitle": "Near mile ${_closestMile.toStringAsFixed(1)}"
           });
           _goToElement(i + 1, context);
         }
@@ -190,7 +205,6 @@ class _WaypointScreenState extends State<WaypointScreen> {
         shrinkWrap: true,
         itemBuilder: (context, index) {
           final Map<String, Object> W = listOfPlaces[index];
-          // TODO: display current mileage and direction as a tile or overlay.
           if (W["isCurrentPosition"] == true) {
             return ListTile(
               leading: Icon(Icons.android, color: Colors.deepOrange),
@@ -200,14 +214,18 @@ class _WaypointScreenState extends State<WaypointScreen> {
           } else {
             double distanceAway = W["dFromMe"];
             String distanceString = "";
+            String mMarker = "";
             if (distanceAway != null) {
               String dist = distanceAway.abs().toStringAsFixed(1);
+              mMarker = Trailpoints.getMileAt(LatLng(W["lat"], W["lon"]),
+                      isNOBO: _isNOBO)
+                  .toStringAsFixed(1);
               distanceString =
                   distanceAway < 0 ? "$dist miles back" : "$dist miles away";
             }
             return ListTile(
               title: Text(W["name"]),
-              subtitle: Text("$distanceString"),
+              subtitle: Text("$distanceString [mile: $mMarker]"),
               trailing: IconButton(
                   icon: Icon(Icons.map),
                   onPressed: () {
