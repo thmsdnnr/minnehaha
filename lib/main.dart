@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
-      home: MyHomePage(title: "∆ MINNEHAHA ∆"),
+      home: MyHomePage(title: "√∆∆∆ <3 ∆∆∆√")
     );
   }
 }
@@ -63,6 +63,11 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: <Widget>[
           IconButton(
+            tooltip: "Get location",
+            icon: Icon(Icons.location_on),
+            onPressed: getPosition,
+          ),
+          IconButton(
             icon: Icon(Icons.map),
             onPressed: () => Navigator.push(
                 context, MaterialPageRoute(builder: (context) => _mapScreen)),
@@ -98,8 +103,12 @@ class _MyHomePageState extends State<MyHomePage> {
               waypoint["closestWptIdx"], _closestWptIdx,
               isNOBO: _isNOBO)
           .toStringAsFixed(1);
-      result.add(ListTile(
-        title: Text("Next ${fullFromAbbrev[waypoint["typ"]]}: ${waypoint["name"]}"),
+      result.add(Card(
+        elevation: 4.0,
+        child:
+      ListTile(
+        title: Text(
+            "Next ${fullFromAbbrev[waypoint["typ"]]}: ${waypoint["name"]}", style: Theme.of(context).textTheme.body2),
         subtitle: Text("$distance [mile: $mMarker]"),
         trailing: IconButton(
             icon: Icon(Icons.map),
@@ -107,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => MapScreen(waypoint)));
             }),
-      ));
+      )));
     }
     return result;
   }
@@ -121,7 +130,13 @@ class _MyHomePageState extends State<MyHomePage> {
       var nextCAR = Waypoints.getNextOfType(closestWptIdx, "CAR", _isNOBO);
       var nextTRL = Waypoints.getNextOfType(closestWptIdx, "TRL", _isNOBO);
       var nextPOI = Waypoints.getNextOfType(closestWptIdx, "POI", _isNOBO);
-      waypoints..add(nextWTR)..add(nextCMP)..add(nextTWN)..add(nextCAR)..add(nextCAR)..add(nextPOI);
+      waypoints
+        ..add(nextWTR)
+        ..add(nextCMP)
+        ..add(nextTWN)
+        ..add(nextCAR)
+        ..add(nextTRL)
+        ..add(nextPOI);
     }
     return Container(
         decoration: new BoxDecoration(
@@ -129,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
             image: AssetImage('assets/marmot.jpeg'),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.6), BlendMode.dstATop),
+                Colors.black.withOpacity(0.3), BlendMode.dstATop),
           ),
         ),
         child: Column(
