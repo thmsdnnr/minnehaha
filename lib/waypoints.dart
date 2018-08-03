@@ -1,4 +1,56 @@
 class Waypoints {
+  static dynamic getNextOfType(int idx, type, isNOBO) {
+    print("$idx $type $isNOBO");
+    print("this length ${list.length}");
+    if (isNOBO == true) {
+      int startingIdx = -1;
+      for (var i = 0; i < list.length; i++) {
+        print("the index $idx");
+        if (idx > list[i]["closestWptIdx"]) {
+          continue;
+        } else {
+          print("The value ${list[i]}");
+          startingIdx = i;
+          break;
+        }
+      }
+      if (startingIdx == -1) {
+        return null;
+      } else {
+        print("starting idx $startingIdx");
+        for (var i = startingIdx; i < list.length; i++) {
+          print(list[i]);
+          if (list[i]["typ"] == type) {
+            return list[i];
+          }
+        }
+      }
+    } else {
+      int startingIdx = -1;
+      for (var i = list.length - 1; i > 0; i--) {
+        print("the index $idx");
+        if (idx < list[i]["closestWptIdx"]) {
+          continue;
+        } else {
+          print("The value ${list[i]}");
+          startingIdx = i;
+          break;
+        }
+      }
+      if (startingIdx == -1) {
+        return null;
+      } else {
+        print("starting idx $startingIdx");
+        for (var i = startingIdx; i < list.length; i++) {
+          print(list[i]);
+          if (list[i]["typ"] == type) {
+            return list[i];
+          }
+        }
+      }
+    }
+  }
+
   static List<Map<String, Object>> list = [
     {
       "lat": 46.788415,

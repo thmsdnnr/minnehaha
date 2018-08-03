@@ -2,7 +2,7 @@ import 'package:latlong/latlong.dart';
 import 'dart:math';
 
 class Trailpoints {
-  static final int numTrailpoints = 1599;
+  static const int numTrailpoints = 1599;
 
   static int getClosestIndexTo(LatLng location) {
     var minDiff = 999999999.0;
@@ -26,11 +26,16 @@ class Trailpoints {
     return 290 - (290 * fractionComplete);
   }
 
+  static Map<String, double> rememberedSums = {};
   static double sumBetweenIndices(int A, int B, {bool isNOBO: false}) {
     // Returns the sum distance in miles between indices
     // A and B in the specified direction
     if (A == null || B == null) {
       return 9999999999.0;
+    }
+    String searchKey = "$A$B${isNOBO.toString()}";
+    if (rememberedSums[searchKey] != null) {
+      return rememberedSums[searchKey];
     }
     int directionMultiplier = isNOBO ? -1 : 1;
     if (A > B) { directionMultiplier = directionMultiplier * -1; }
@@ -43,10 +48,11 @@ class Trailpoints {
     for (var i = smaller; i < larger; i++) {
       cumulativeDistance = cumulativeDistance + list[i]["dist_to_N"];
     }
-    return directionMultiplier * cumulativeDistance;
+    rememberedSums[searchKey] = directionMultiplier * cumulativeDistance;
+    return rememberedSums[searchKey];
   }
 
-  static List<Map<String, double>> list = [
+  static const List<Map<String, double>> list = [
     {
       "lat": 46.655148,
       "lon": -92.374553,

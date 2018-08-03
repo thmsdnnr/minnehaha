@@ -6,46 +6,6 @@ import 'package:thesht/mapscreen.dart';
 import 'package:thesht/trailpoints.dart';
 import 'package:thesht/waypoints.dart';
 
-enum CD { NORTH, SOUTH, EAST, WEST }
-
-const CD_fwd = {
-  CD.NORTH: "north",
-  CD.SOUTH: "south",
-  CD.EAST: "east",
-  CD.WEST: "west",
-};
-
-const CD_rev = {
-  CD.NORTH: "south",
-  CD.SOUTH: "north",
-  CD.EAST: "west",
-  CD.WEST: "east"
-};
-
-enum HD { LEFT, RIGHT }
-
-const HD_fwd = {
-  HD.LEFT: "left",
-  HD.RIGHT: "right",
-};
-
-const HD_rev = {
-  HD.LEFT: "right",
-  HD.RIGHT: "left",
-};
-
-enum WPT_TYPE {
-  POI,
-  WTR,
-  CAR,
-  TWN,
-  OFF,
-  HLP,
-  TRL,
-  THD,
-  CMP,
-}
-
 class WaypointScreen extends StatefulWidget {
   WaypointScreen({Key key, this.title}) : super(key: key);
 
@@ -61,7 +21,7 @@ class WaypointScreen extends StatefulWidget {
 class _WaypointScreenState extends State<WaypointScreen> {
   static String _currentSelected = "ALL";
   static bool _isNOBO = false;
-  static const titleFromFilter = {
+  static const fullFromAbbrev = {
     "ALL": "All",
     "WTR": "Water",
     "CMP": "Campsites",
@@ -108,7 +68,7 @@ class _WaypointScreenState extends State<WaypointScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${titleFromFilter[_currentSelected]}"),
+        title: Text("${fullFromAbbrev[_currentSelected]}"),
         actions: <Widget>[
           IconButton(
             tooltip: "Get location",
@@ -166,7 +126,6 @@ class _WaypointScreenState extends State<WaypointScreen> {
 
   Widget buildPlaceList(BuildContext context, filter, _isNOBO) {
     List<Map<String, Object>> listOfPlaces = Waypoints.list;
-    // _isNOBO == true ? Waypoints.list : Waypoints.list.reversed.toList();
     for (var place in listOfPlaces) {
       place["dFromMe"] = calculateDistanceFromMe(place, _isNOBO);
     }
